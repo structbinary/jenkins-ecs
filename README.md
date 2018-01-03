@@ -1,2 +1,1 @@
-# jenkins-ecs
-cloudformation templates to lauch jenkins over ecs
+# Deploying Jenkins as microservice with Amazon ECS, AWS CloudFormation, and an Application Load Balancer
