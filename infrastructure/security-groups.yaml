@@ -46,37 +46,6 @@ Resources:
             Tags:
                 - Key: Name
                   Value: !Sub ${EnvironmentName}-LoadBalancers
-    DBEC2SecurityGroup:
-        Type: AWS::EC2::SecurityGroup
-        Properties:
-            VpcId: !Ref VPC
-            GroupDescription: Access to the Databases
-            SecurityGroupIngress:
-              - IpProtocol: tcp
-                FromPort: '3306'
-                ToPort: '3306'
-                CidrIp: "0.0.0.0/0"
-              - IpProtocol: tcp
-                FromPort: '5432'
-                ToPort: '5432'
-                CidrIp: "0.0.0.0/0"
-            Tags:
-                - Key: Name
-                  Value: !Sub ${EnvironmentName}-DBEC2
-
-    RedisSecurityGroup:
-        Type: AWS::EC2::SecurityGroup
-        Properties:
-            VpcId: !Ref VPC
-            GroupDescription: Access to the redis cluster
-            SecurityGroupIngress:
-              - IpProtocol: tcp
-                FromPort: '6379'
-                ToPort: '6379'
-                CidrIp: "0.0.0.0/0"
-            Tags:
-                - Key: Name
-                  Value: !Sub ${EnvironmentName}-Redis
 
 Outputs:
 
@@ -87,11 +56,3 @@ Outputs:
     LoadBalancerSecurityGroup:
         Description: A reference to the security group for load balancers
         Value: !Ref LoadBalancerSecurityGroup
-
-    DBEC2SecurityGroup:
-        Description: A reference to the security group for mysql and postgresql
-        Value: !Ref DBEC2SecurityGroup
-
-    RedisSecurityGroup:
-        Description: A reference to the security group for redis
-        Value: !Ref RedisSecurityGroup
