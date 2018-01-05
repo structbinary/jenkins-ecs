@@ -8,11 +8,10 @@ Description: >
     It then deploys a highly available ECS cluster using an AutoScaling Group, with
     ECS hosts distributed across multiple Availability Zones.
 
-    Finally, it deploys a pair of example ECS services from containers published in
+    Finally, it deploys jenkins on  ECS services from containers published in
     Amazon EC2 Container Registry (Amazon ECR).
 
-    Last Modified: 22nd September 2016
-    Author: Paul Maddox <pmaddox@amazon.com>
+    Author: Sandeep Mahto <sandeep.mahto@opstree.com>
 
 Parameters: 
     KeyName: 
@@ -29,26 +28,11 @@ Parameters:
         Description: How many ECS hosts do you want to initially deploy?
         Type: Number
         Default: 1
-    
-    Bucket:
-        Type: String
-        Description: Name of the bucket where the id_rsa key is located in an encrypted form
-        Default: jenkins-ssh
 
     TemplateBucket:
         Type: String
         Description: Name of the bucket where the id_rsa key is located in an encrypted form
-        Default: jenkins-blog
-
-    RegionName:
-        Type: String
-        Description: Region name where the bucket is located.
-        Default: us-west-2
-        
-    KMSRegionName:
-        Type: String
-        Description: Region name where the KMS KEY is located.
-        Default: us-east-1
+        Default: jenkins.ecs
 
     AccountNumber:
          Description: Account number is needed for configuring ecs cluster
@@ -120,14 +104,11 @@ Resources:
                 SecurityGroup: !GetAtt SecurityGroups.Outputs.ECSHostSecurityGroup
                 Subnets: !GetAtt VPC.Outputs.PrivateSubnets
                 KeyName: !Ref KeyName
-                Bucket: !Ref Bucket
-                RegionName: !Ref RegionName
-                KMSRegionName: !Ref KMSRegionName
 
     JenkinsService:
         Type: AWS::CloudFormation::Stack
         Properties:
-            TemplateURL: !Sub https://s3.amazonaws.com/${TemplateBucket}/services/jenkins-service/service.yaml
+            TemplateURL: !Sub https://s3.amazonaws.com/${TemplateBucket}/services/service.yaml
             Parameters:
                 VPC: !GetAtt VPC.Outputs.VPC
                 Cluster: !GetAtt ECS.Outputs.Cluster
@@ -146,5 +127,5 @@ Outputs:
 
 
     WebsiteServiceUrl:
-        Description: The URL endpoint for the website service
+        Description: The URL endpoint for the jenkins service is
         Value: !Join ["", [ !GetAtt ALB.Outputs.LoadBalancerUrl, "/" ]]

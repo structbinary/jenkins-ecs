@@ -51,7 +51,6 @@ Parameters:
 
 
 Resources:
-
     Service:
         Type: AWS::ECS::Service
         Properties:
@@ -71,12 +70,6 @@ Resources:
         Type: AWS::ECS::TaskDefinition
         Properties:
             TaskRoleArn: !Ref Taskrole
-            Volumes:
-                -
-                  Name: ssh-vol
-                  Host:
-                    SourcePath: "/root/.ssh"
-
             ContainerDefinitions:
                 - Name: jenkins-service
                   Essential: true
@@ -92,10 +85,6 @@ Resources:
                        Value: !Sub ${AccountNumber}.dkr.ecr.${RegionName}.amazonaws.com/${RepositoryName}:${SlaveTag}
                      - Name: slaveName
                        Value: jnlp-slave
-                  MountPoints:
-                    - ContainerPath: "/root/.ssh"
-                      SourceVolume: ssh-vol
-                      ReadOnly: false
 
                   Memory: 2000
                   PortMappings:
@@ -109,19 +98,6 @@ Resources:
                         awslogs-group: !Ref AWS::StackName
                         awslogs-region: !Ref AWS::Region
 
-    SlaveTaskDefinition:
-        Type: AWS::ECS::TaskDefinition
-        Properties:
-            ContainerDefinitions:
-                - Name: jenkins-slave
-                  Essential: true
-                  Image: jenkinsci/jnlp-slave
-                  Memory: 1500
-                  LogConfiguration:
-                    LogDriver: awslogs
-                    Options:
-                        awslogs-group: !Sub ${AWS::StackName}-slave
-                        awslogs-region: !Ref AWS::Region
 
     CloudWatchLogsGroup:
         Type: AWS::Logs::LogGroup
